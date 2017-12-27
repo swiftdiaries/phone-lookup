@@ -23,7 +23,7 @@ const (
 
 var (
 	respponsePerson *util.Person
-	port            = os.Getenv("PORT")
+	port            = os.Getenv("PORT_1")
 	redisServer     = os.Getenv("REDIS_URL")
 )
 

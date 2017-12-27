@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	port        = os.Getenv("PORT")
+	port        = os.Getenv("PORT_2")
 	redisServer = os.Getenv("REDIS_URL")
 )
 
