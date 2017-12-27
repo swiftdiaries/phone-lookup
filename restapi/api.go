@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/swiftdiaries/phone-lookup/search/query"
@@ -13,19 +14,23 @@ import (
 	"github.com/swiftdiaries/phone-lookup/search/util"
 )
 
+var (
+	port        = os.Getenv("PORT")
+	redisServer = os.Getenv("REDIS_URL")
+)
+
 func main() {
-	redisServer := flag.String("redis", ":6379", "Specify the redis server (e.g. 127.0.0.1:6379)")
 	redisPassword := flag.String("redis-password", "", "Specify the redis server password")
 
 	flag.Parse()
 
-	if redisServer != nil && redisPassword != nil {
-		store.Pool = store.NewPool(*redisServer, *redisPassword)
+	if redisServer != "" && redisPassword != nil {
+		store.Pool = store.NewPool(redisServer, *redisPassword)
 	}
 
 	router := mux.NewRouter()
 	router.HandleFunc("/phonenumber/{phonenumber}/username/{username}", GetPhoneNumberEndPoint)
-	log.Fatal(http.ListenAndServe(":4040", router))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
 
 //GetPhoneNumberEndPoint calls the function to check if phone number

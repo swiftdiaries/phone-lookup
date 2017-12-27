@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 	"runtime"
 
@@ -20,17 +21,20 @@ const (
 	filename = "index.html"
 )
 
-var respponsePerson *util.Person
+var (
+	respponsePerson *util.Person
+	port            = os.Getenv("PORT")
+	redisServer     = os.Getenv("REDIS_URL")
+)
 
 func main() {
 
-	redisServer := flag.String("redis", ":6379", "Specify the redis server (e.g. 127.0.0.1:6379)")
 	redisPassword := flag.String("redis-password", "", "Specify the redis server password")
 
 	flag.Parse()
 
-	if redisServer != nil && redisPassword != nil {
-		store.Pool = store.NewPool(*redisServer, *redisPassword)
+	if redisServer != "" && redisPassword != nil {
+		store.Pool = store.NewPool(redisServer, *redisPassword)
 	}
 
 	fileServerIndex := http.FileServer(http.Dir("./frontend/index/"))
@@ -38,8 +42,8 @@ func main() {
 	http.HandleFunc("/result", output)
 	fileServerResult := http.FileServer(http.Dir("./frontend/result/"))
 	http.Handle("/display", fileServerResult)
-	go open("http://localhost:9090/")
-	log.Fatal(http.ListenAndServe(":9090", nil))
+	go open("http://localhost:" + port + "/")
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func output(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +64,7 @@ func output(w http.ResponseWriter, r *http.Request) {
 			fmt.Printf("%s\n", string(contents))
 			json.Unmarshal(contents, &respponsePerson)
 			fmt.Printf("%s \n", respponsePerson.Address)
-			http.Redirect(w, r, "http://127.0.0.1:9090/result", http.StatusSeeOther)
+			http.Redirect(w, r, "http://127.0.0.1:"+port+"/result", http.StatusSeeOther)
 		}
 	} else {
 		t, _ := template.ParseFiles("./frontend/result/result.html")
