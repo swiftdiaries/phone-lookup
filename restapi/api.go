@@ -30,6 +30,7 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/phonenumber/{phonenumber}/username/{username}", GetPhoneNumberEndPoint)
+	fmt.Printf("Serving API on http://localhost:%s \n", port)
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }
 

@@ -51,7 +51,7 @@ func output(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		r.ParseForm()
 		fmt.Println(r.Form["username"], r.Form["phonenumber"])
-		phonenumberURL := "http://127.0.0.1:4040/phonenumber/" + r.Form["phonenumber"][0] + "/username/" + r.Form["username"][0]
+		phonenumberURL := "http://localhost:4040/phonenumber/" + r.Form["phonenumber"][0] + "/username/" + r.Form["username"][0]
 		response, err := http.Get(phonenumberURL)
 		if err != nil {
 			fmt.Printf("Error in http.get for response: %s", err)
@@ -64,7 +64,7 @@ func output(w http.ResponseWriter, r *http.Request) {
 			fmt.Printf("%s\n", string(contents))
 			json.Unmarshal(contents, &respponsePerson)
 			fmt.Printf("%s \n", respponsePerson.Address)
-			http.Redirect(w, r, "http://127.0.0.1:"+port+"/result", http.StatusSeeOther)
+			http.Redirect(w, r, "http://localhost:"+port+"/result", http.StatusSeeOther)
 		}
 	} else {
 		t, _ := template.ParseFiles("./frontend/result/result.html")
