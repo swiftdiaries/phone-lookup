@@ -1,8 +1,17 @@
 version: '2'
 
 services:
+  app.mvc:
+    image: swiftdiaries/phone-lookup-frontend
+    environment:
+      PORT_1: '8080'
+    links:
+      - api
+    ports:
+      - "127.0.0.1:8080:8080"
+
   api:
-    image: phone-lookup-api
+    image: swiftdiaries/phone-lookup-api
     environment:
       PORT_2: '4040'
       REDIS_URL: 'redis:6379'
@@ -10,8 +19,8 @@ services:
       - redis
     ports:
       - "127.0.0.1:4040:4040"  
-
+  
   redis:
-    image: redis-swiftdiaries
+    image: swiftdiaries/redis-swiftdiaries
     ports:
       - "6379:6379"

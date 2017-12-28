@@ -5,9 +5,10 @@ COPY . /go/src/github.com/swiftdiaries/phone-lookup
 
 RUN go install github.com/swiftdiaries/phone-lookup/frontend
 
-ENV PORT_1=9090
-ENV REDIS_URL=redis://localhost:6379
+ENV PORT_1=8080
+
+WORKDIR /go/src/github.com/swiftdiaries/phone-lookup
 
 ENTRYPOINT /go/bin/frontend
 
-EXPOSE 9090
+EXPOSE 8080

@@ -42,7 +42,7 @@ func main() {
 	http.HandleFunc("/result", output)
 	fileServerResult := http.FileServer(http.Dir("./frontend/result/"))
 	http.Handle("/display", fileServerResult)
-	//go open("http://localhost:" + port + "/")
+	fmt.Print("Serving on http://localhost:" + port + "/")
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
@@ -51,7 +51,7 @@ func output(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		r.ParseForm()
 		fmt.Println(r.Form["username"], r.Form["phonenumber"])
-		phonenumberURL := "http://localhost:4040/phonenumber/" + r.Form["phonenumber"][0] + "/username/" + r.Form["username"][0]
+		phonenumberURL := "http://api:4040/phonenumber/" + r.Form["phonenumber"][0] + "/username/" + r.Form["username"][0]
 		response, err := http.Get(phonenumberURL)
 		if err != nil {
 			fmt.Printf("Error in http.get for response: %s", err)
