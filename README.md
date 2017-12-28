@@ -25,11 +25,5 @@ Setup
 
 Landing Page
 -----------------
-![Landing Page](landingpage.png) <br>
-
-Sample Results
---------------
-![Sample Results](exampleresults.png)
-
-     
+![Landing Page](landingpage.png) <br>     
      
