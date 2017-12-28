@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"time"
 
 	"github.com/swiftdiaries/phone-lookup/search/store"
 	"github.com/swiftdiaries/phone-lookup/search/util"
@@ -51,20 +52,26 @@ func output(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		r.ParseForm()
 		fmt.Println(r.Form["username"], r.Form["phonenumber"])
-		phonenumberURL := "http://api:4040/phonenumber/" + r.Form["phonenumber"][0] + "/username/" + r.Form["username"][0]
-		response, err := http.Get(phonenumberURL)
-		if err != nil {
-			fmt.Printf("Error in http.get for response: %s", err)
+		if len(r.Form["phonenumber"][0]) < 10 || len(r.Form["username"][0]) < 4 {
+			//fmt.Fprintf(w, "Please enter a valid name and phone number to search for \n 'http://localhost:'+port+'/'")
+			time.Sleep(time.Second * 2)
+			http.Redirect(w, r, "http://localhost:"+port+"/", http.StatusSeeOther)
 		} else {
-			defer response.Body.Close()
-			contents, err := ioutil.ReadAll(response.Body)
+			phonenumberURL := "http://api:4040/phonenumber/" + r.Form["phonenumber"][0] + "/username/" + r.Form["username"][0]
+			response, err := http.Get(phonenumberURL)
 			if err != nil {
-				fmt.Printf("%s", err)
+				fmt.Printf("Error in http.get for response: %s", err)
+			} else {
+				defer response.Body.Close()
+				contents, err := ioutil.ReadAll(response.Body)
+				if err != nil {
+					fmt.Printf("%s", err)
+				}
+				fmt.Printf("%s\n", string(contents))
+				json.Unmarshal(contents, &respponsePerson)
+				fmt.Printf("%s \n", respponsePerson.Address)
+				http.Redirect(w, r, "http://localhost:"+port+"/result", http.StatusSeeOther)
 			}
-			fmt.Printf("%s\n", string(contents))
-			json.Unmarshal(contents, &respponsePerson)
-			fmt.Printf("%s \n", respponsePerson.Address)
-			http.Redirect(w, r, "http://localhost:"+port+"/result", http.StatusSeeOther)
 		}
 	} else {
 		t, _ := template.ParseFiles("./frontend/result/result.html")
