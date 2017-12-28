@@ -49,7 +49,12 @@ func GetPhoneNumberEndPoint(w http.ResponseWriter, r *http.Request) {
 
 	person = query.CheckAndFetch(person)
 	if person == nil {
-		fmt.Fprintf(w, "nil")
+		person = &util.Person{
+			Name:        "Does Not Match Records",
+			Phonenumber: phonenumber,
+			Address:     "Possible captcha violation, visit truepeoplesearch.com and prove you are not a robot.",
+		}
+		//fmt.Fprintf(w, "")
 	}
 	data, err := json.Marshal(person)
 	if err != nil {
@@ -58,5 +63,4 @@ func GetPhoneNumberEndPoint(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(string(data))
 	fmt.Fprintf(w, "%s", data)
-
 }
