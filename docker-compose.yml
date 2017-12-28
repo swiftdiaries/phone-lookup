@@ -10,18 +10,8 @@ services:
       - redis
     ports:
       - "127.0.0.1:4040:4040"  
-      
-  app:  
-    image: phone-lookup-frontend
-    environment:
-      PORT_1: '9090'
-      REDIS_URL: 'redis:6379'
-    depends_on:
-      - redis
-    ports:
-      - "127.0.0.1:9090:9090"
 
   redis:
-    image: redis
+    image: redis-swiftdiaries
     ports:
-      - "127.0.0.1:6379:6379"
+      - "6379:6379"

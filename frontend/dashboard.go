@@ -42,7 +42,7 @@ func main() {
 	http.HandleFunc("/result", output)
 	fileServerResult := http.FileServer(http.Dir("./frontend/result/"))
 	http.Handle("/display", fileServerResult)
-	go open("http://localhost:" + port + "/")
+	//go open("http://localhost:" + port + "/")
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
