@@ -66,6 +66,21 @@ func ResultURLScrape(phonenumber string) []string {
 	return keys
 }
 
+//NameMatching to match names
+func NameMatching(reference string, inputname string) bool {
+	outerindex := 0
+	innerindex := 0
+	for outerindex < len(reference) {
+		if reference[outerindex] == inputname[innerindex] {
+			outerindex++
+			innerindex++
+		} else {
+			return false
+		}
+	}
+	return true
+}
+
 //FindUsernameExists check if username has an exact match for results generated
 func FindUsernameExists(person *util.Person, urls []string) *util.Person {
 	for _, url := range urls {
@@ -76,9 +91,15 @@ func FindUsernameExists(person *util.Person, urls []string) *util.Person {
 		doc.Find("title").Each(func(i int, s *goquery.Selection) {
 			titleString := doc.Find("title").First().Text()
 			nameCheck := strings.Split(titleString, "-")[1]
-			if strings.Contains(nameCheck, person.Name) {
-				person.Name = nameCheck
-				//fmt.Printf("name check: %s", nameCheck)
+			nameCheck = nameCheck[1 : len(nameCheck)-1]
+			names := strings.Split(nameCheck, " ")
+			referencename := person.Name
+			referencename = strings.Split(referencename, " ")[0]
+			if strings.Contains(names[0], referencename) {
+				if NameMatching(referencename, names[0]) {
+					person.Name = nameCheck
+					fmt.Printf("names[0]: %s \n namecheck:%s", names[0], nameCheck)
+				}
 			}
 			if strings.Contains(s.Text(), person.Name) {
 				sel := doc.Find("a.link-to-more").First()
